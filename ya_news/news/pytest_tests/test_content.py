@@ -22,31 +22,16 @@ def test_home_page_news_count(
     ) <= settings.NEWS_COUNT_ON_HOME_PAGE
 
 
-def test_news_sorted_by_date(client, test_news, home_page_news_url):
+def test_news_sorted_by_date(client, home_page_news_url):
     """
     Тестирует, что новости на главной странице сортируются по дате
     от самой свежей к самой старой.
-
-    В данном тесте создаются три новости с различными датами создания,
-    после чего отправляется GET-запрос на главную страницу новостей.
-    Проверяется, что список новостей, полученный из контекста ответа,
-    соответствует порядку их создания.
     """
-    news1 = test_news(title="News 1", created_at=timezone.now())
-    news2 = test_news(
-        title="News 2",
-        created_at=timezone.now() - timezone.timedelta(days=1)
-    )
-    news3 = test_news(
-        title="News 3",
-        created_at=timezone.now() - timezone.timedelta(days=2)
-    )
-
     response = client.get(home_page_news_url)
-
-    news_list = response.context['object_list']
-
-    assert list(news_list) == [news1, news2, news3]
+    object_list = response.context['object_list']
+    all_dates = [news.date for news in object_list]
+    sorted_dates = sorted(all_dates, reverse=True)
+    assert all_dates == sorted_dates
 
 
 def test_anonymous_client_has_no_form(client, detail_page_news_url):
