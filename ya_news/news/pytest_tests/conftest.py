@@ -123,6 +123,8 @@ def authenticated_not_author_client(sample_not_author):
     return client
 
 
+DEFAULT_CLIENT = pytest.lazy_fixture('client')
+
 AUTHORIZED_AUTHOR_CLIENT = pytest.lazy_fixture('authenticated_author_client')
 
 NOT_AUTHORIZED_CLIENT = pytest.lazy_fixture('authenticated_not_author_client')
@@ -140,5 +142,3 @@ USER_LOGIN_PAGE_URL = pytest.lazy_fixture('user_login_page_url')
 USER_LOGOUT_PAGE_URL = pytest.lazy_fixture('user_logout_page_url')
 
 USER_SIGNUP_PAGE_URL = pytest.lazy_fixture('user_signup_page_url')
-
-DEFAULT_CLIENT = pytest.lazy_fixture('client')
