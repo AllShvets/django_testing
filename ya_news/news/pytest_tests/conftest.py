@@ -13,7 +13,7 @@ def enable_database_access(db):
 
 
 @pytest.fixture
-def client():
+def anon_client():
     return Client()
 
 
@@ -123,7 +123,7 @@ def authenticated_not_author_client(sample_not_author):
     return client
 
 
-DEFAULT_CLIENT = pytest.lazy_fixture('client')
+DEFAULT_CLIENT = pytest.lazy_fixture('anon_client')
 
 AUTHORIZED_AUTHOR_CLIENT = pytest.lazy_fixture('authenticated_author_client')
 
