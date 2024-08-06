@@ -49,7 +49,7 @@ def test_news_sorted_by_date(client, test_news, home_page_news_url):
     assert list(news_list) == [news1, news2, news3]
 
 
-def test_anonymous_client_has_no_form(client, news_detail_url):
+def test_anonymous_client_has_no_form(client, detail_page_news_url):
     """
     Тестирует, что анонимный пользователь
     не видит форму комментариев на странице деталей новости.
@@ -58,13 +58,13 @@ def test_anonymous_client_has_no_form(client, news_detail_url):
     Проверяется, что в контексте ответа нет ключа 'form', что подтверждает
     отсутствие формы комментариев для анонимных пользователей.
     """
-    response = client.get(news_detail_url)
+    response = client.get(detail_page_news_url)
     assert 'form' not in response.context
 
 
 def test_authorized_client_has_form(
     authenticated_author_client,
-    news_detail_url
+    detail_page_news_url
 ):
     """
     Тестирует, что авторизованный пользователь видит форму комментариев
@@ -74,6 +74,6 @@ def test_authorized_client_has_form(
     с авторизованным клиентом. Проверяется, что в контексте ответа присутствует
     ключ 'form' и что объект `form` является экземпляром `CommentForm`.
     """
-    response = authenticated_author_client.get(news_detail_url)
+    response = authenticated_author_client.get(detail_page_news_url)
     assert 'form' in response.context
     assert isinstance(response.context['form'], CommentForm)

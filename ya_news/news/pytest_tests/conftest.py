@@ -7,6 +7,11 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 
 
+@pytest.fixture(autouse=True)
+def enable_database_access(db):
+    ...
+
+
 @pytest.fixture
 def test_news(db):
     news_instance = News.objects.create(
@@ -89,11 +94,6 @@ def user_signup_page_url():
     return reverse('users:signup')
 
 
-@pytest.fixture(autouse=True)
-def enable_database_access(db):
-    ...
-
-
 @pytest.fixture
 def sample_author(django_user_model):
     return django_user_model.objects.create(username='Автор новости')
@@ -118,22 +118,22 @@ def authenticated_not_author_client(sample_not_author):
     return client
 
 
-AUTHORIZED_AUTHOR_CLIENT = pytest.lazy_fixture('author_client')
+AUTHORIZED_AUTHOR_CLIENT = pytest.lazy_fixture('authenticated_author_client')
 
-NOT_AUTHORIZED_CLIENT = pytest.lazy_fixture('not_author_client')
+NOT_AUTHORIZED_CLIENT = pytest.lazy_fixture('authenticated_not_author_client')
 
-COMMENT_EDIT_URL = pytest.lazy_fixture('comment_update_url')
+COMMENT_EDIT_URL = pytest.lazy_fixture('update_comment_url')
 
-COMMENT_REMOVE_URL = pytest.lazy_fixture('comment_delete_url')
+COMMENT_REMOVE_URL = pytest.lazy_fixture('delete_comment_url')
 
-HOME_PAGE_NEWS_URL = pytest.lazy_fixture('news_home_url')
+HOME_PAGE_NEWS_URL = pytest.lazy_fixture('home_page_news_url')
 
-NEWS_DETAIL_PAGE_URL = pytest.lazy_fixture('news_detail_url')
+NEWS_DETAIL_PAGE_URL = pytest.lazy_fixture('detail_page_news_url')
 
-USER_LOGIN_PAGE_URL = pytest.lazy_fixture('users_login_url')
+USER_LOGIN_PAGE_URL = pytest.lazy_fixture('user_login_page_url')
 
-USER_LOGOUT_PAGE_URL = pytest.lazy_fixture('users_logout_url')
+USER_LOGOUT_PAGE_URL = pytest.lazy_fixture('user_logout_page_url')
 
-USER_SIGNUP_PAGE_URL = pytest.lazy_fixture('users_signup_url')
+USER_SIGNUP_PAGE_URL = pytest.lazy_fixture('user_signup_page_url')
 
 DEFAULT_CLIENT = pytest.lazy_fixture('client')
