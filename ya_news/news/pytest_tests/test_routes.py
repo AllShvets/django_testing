@@ -41,12 +41,12 @@ def test_pages_availability(client, url, expected_status):
 @pytest.mark.parametrize(
     'url', (COMMENT_EDIT_URL, COMMENT_REMOVE_URL)
 )
-def test_redirect_pages_auth(client, url, users_login_url):
+def test_redirect_pages_auth(client, url, user_login_page_url):
     """
     Проверяет перенаправление неавторизованного пользователя
     на страницу входа при попытке доступа к
     страницам редактирования или удаления комментариев.
     """
-    expected_url = f'{users_login_url}?next={url}'
+    expected_url = f'{user_login_page_url}?next={url}'
     response = client.get(url)
     assertRedirects(response, expected_url)
