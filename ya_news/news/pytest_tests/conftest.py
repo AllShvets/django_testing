@@ -13,6 +13,11 @@ def enable_database_access(db):
 
 
 @pytest.fixture
+def client():
+    return Client()
+
+
+@pytest.fixture
 def test_news(db):
     news_instance = News.objects.create(
         title='Тестовая новость',
