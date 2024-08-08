@@ -8,7 +8,7 @@ FORM_DATA_COMMENT = {'text': 'Текст комментария'}
 def test_anonymous_user_cannot_post_comment(client, detail_page_news_url):
     """Проверяет, что анонимный пользователь не может оставить комментарий."""
     initial_count_comments = Comment.objects.count()
-    client.post(detail_page_news_url, data='Текст комментария')
+    client.post(detail_page_news_url, data=FORM_DATA_COMMENT)
     count_comments = Comment.objects.count()
     assert count_comments == initial_count_comments
 
@@ -119,7 +119,7 @@ def test_user_cant_edit_comment_of_another_user(
         data=new_comment_text
     )
     sample_comment.refresh_from_db()
-    assert sample_comment.text == FORM_DATA_COMMENT['text']
+    assert sample_comment.text == FORM_DATA_COMMENT
 
 
 def test_user_cant_delete_comment_of_another_user(
