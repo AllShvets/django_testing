@@ -97,11 +97,12 @@ def test_user_can_delete_own_comment(
     """Проверяет, что пользователь может удалить свой комментарий."""
     initial_comment_count = Comment.objects.count()
     response = authenticated_author_client.delete(delete_comment_url)
+
     comments_url = detail_page_news_url + '#comments'
     assertRedirects(response, comments_url)
 
     comments_count = Comment.objects.count()
-    assert comments_count + 1 == initial_comment_count
+    assert comments_count == initial_comment_count - 1
 
 
 def test_user_cant_edit_comment_of_another_user(
