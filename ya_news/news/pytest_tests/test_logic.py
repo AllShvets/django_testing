@@ -8,7 +8,7 @@ FORM_DATA_COMMENT = {'text': 'Текст комментария'}
 def test_anonymous_user_cannot_post_comment(client, detail_page_news_url):
     """Проверяет, что анонимный пользователь не может оставить комментарий."""
     initial_count_comments = Comment.objects.count()
-    client.post(detail_page_news_url, data=FORM_DATA_COMMENT['text'])
+    client.post(detail_page_news_url, data='Текст комментария')
     count_comments = Comment.objects.count()
     assert count_comments == initial_count_comments
 
