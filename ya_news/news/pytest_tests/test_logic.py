@@ -89,20 +89,24 @@ def test_user_can_edit_own_comment(
     assert sample_comment.text == new_comment_text
 
 
-def test_user_can_delete_own_comment(
+def test_author_can_delete_own_comment(
     authenticated_author_client,
-    detail_page_news_url,
-    delete_comment_url
+    delete_comment_url,
+    detail_page_news_url
 ):
-    """Проверяет, что пользователь может удалить свой комментарий."""
+    """Проверяет, что автор комментария может удалить свой комментарий."""
     initial_comment_count = Comment.objects.count()
+
     response = authenticated_author_client.delete(delete_comment_url)
-
     comments_url = detail_page_news_url + '#comments'
-    assertRedirects(response, comments_url)
+    assert response.status_code == 302
+    assert response.url == comments_url
 
-    comments_count = Comment.objects.count()
-    assert comments_count == initial_comment_count - 1
+    assert Comment.objects.count() == initial_comment_count - 1
+
+    assert not Comment.objects.filter(
+        id=delete_comment_url.split('/')[-1]
+    ).exists()
 
 
 def test_user_cant_edit_comment_of_another_user(
