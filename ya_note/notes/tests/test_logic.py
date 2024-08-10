@@ -4,6 +4,8 @@ from notes.models import Note
 
 from slugify import slugify
 
+from http import HTTPStatus
+
 
 class TestLogic(TestCaseBase):
     def test_authenticated_user_can_create_note(self):
@@ -84,16 +86,13 @@ class TestLogic(TestCaseBase):
         Проверяем, что автор может редактировать и удалять свои заметки,
         но не имеет доступа к редактированию или удалению чужих.
         """
-        self.client.login(username=self.author.username, password='password')
-        response = self.client.post(self.UPDATE_URL, data=self.FORM_DATA)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, self.SUCCESS_URL)
-
-        self.note.refresh_from_db()
-
-        for field in ['title', 'text', 'slug']:
-            self.assertEqual(getattr(self.note, field), self.FORM_DATA[field])
+        self.client.force_login(self.not_author)
+        response = self.client.post(self.UPDATE_URL, self.FORM_DATA)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+        note_from_db = Note.objects.get(id=self.note.id)
+        self.assertEqual(self.note.title, note_from_db.title)
+        self.assertEqual(self.note.text, note_from_db.text)
+        self.assertEqual(self.note.slug, note_from_db.slug)
 
     def test_author_can_delete_his_note(self):
         """
@@ -102,11 +101,7 @@ class TestLogic(TestCaseBase):
         """
         self.client.force_login(self.author)
         initial_notes_count = Note.objects.count()
-
         response = self.client.post(self.DELETE_URL)
-
-        self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, self.SUCCESS_URL)
-
         updated_notes_count = Note.objects.count()
-        self.assertEqual(initial_notes_count - 1, updated_notes_count)
+        self.assertEqual(updated_notes_count + 1, initial_notes_count)
