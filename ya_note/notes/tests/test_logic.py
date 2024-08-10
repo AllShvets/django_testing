@@ -9,18 +9,19 @@ class TestLogic(TestCaseBase):
     def test_authenticated_user_can_create_note(self):
         """Залогиненный пользователь может создать заметку."""
         self.client.force_login(self.author)
-        initial_notes_count = self.get_notes_count()
+        initial_notes_count = Note.objects.count()
 
         response = self.client.post(self.ADD_URL, data=self.FORM_DATA)
-
-        self.assert_creation_success(response, initial_notes_count)
+        self.assertRedirects(response, self.SUCCESS_URL)
+        notes_count = Note.objects.count()
+        self.assertEqual(notes_count, initial_notes_count + 1)
 
     def test_anonymous_user_cannot_create_note(self):
         """Анонимный пользователь не может создать заметку."""
         Note.objects.all().delete()
         notes_count_init = Note.objects.count()
         response = self.client.post(self.ADD_URL, data=self.FORM_DATA)
-        expected_url = f'{self.USERS_LOGIN_URL}?next={self.ADD_URL}'
+        expected_url = f'{self.LOGIN_URL}?next={self.ADD_URL}'
         self.assertRedirects(response, expected_url)
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, notes_count_init)
