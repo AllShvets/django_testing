@@ -119,9 +119,10 @@ def test_user_cant_edit_comment_of_another_user(
     комментарий другого пользователя.
     """
     new_comment_text = 'Измененный текст комментария'
+    update_data = {'text': new_comment_text}
     authenticated_not_author_client.post(
         update_comment_url,
-        data=new_comment_text
+        data=update_data
     )
     sample_comment.refresh_from_db()
     assert sample_comment.text == FORM_DATA_COMMENT
