@@ -72,6 +72,7 @@ def test_user_can_edit_own_comment(
     sample_author,
     test_news,
     sample_comment,
+    update_comment_url,
     detail_page_news_url
 ):
     """Проверяет, что пользователь может редактировать свой комментарий."""
@@ -79,7 +80,7 @@ def test_user_can_edit_own_comment(
     update_data = {'text': new_comment_text}
 
     response = authenticated_author_client.post(
-        f'{detail_page_news_url}/comments/{sample_comment.id}/edit/',
+        update_comment_url,
         data=update_data
     )
 
@@ -104,9 +105,8 @@ def test_author_can_delete_own_comment(
 
     assert Comment.objects.count() == initial_comment_count - 1
 
-    assert not Comment.objects.filter(
-        id=delete_comment_url.split('/')[-1]
-    ).exists()
+    comment_id = delete_comment_url.split('/')[-2]
+    assert not Comment.objects.filter(id=comment_id).exists()
 
 
 def test_user_cant_edit_comment_of_another_user(
@@ -125,7 +125,7 @@ def test_user_cant_edit_comment_of_another_user(
         data=update_data
     )
     sample_comment.refresh_from_db()
-    assert sample_comment.text == FORM_DATA_COMMENT
+    assert sample_comment.text == FORM_DATA_COMMENT['text']
 
 
 def test_user_cant_delete_comment_of_another_user(
