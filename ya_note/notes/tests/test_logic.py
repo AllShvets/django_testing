@@ -15,6 +15,11 @@ class TestLogic(TestCaseBase):
         self.assertRedirects(response, self.SUCCESS_URL)
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, initial_notes_count + 1)
+        new_note = Note.objects.get()
+        self.assertEqual(new_note.title, self.FORM_DATA['title'])
+        self.assertEqual(new_note.text, self.FORM_DATA['text'])
+        self.assertEqual(new_note.slug, self.FORM_DATA['slug'])
+        self.assertEqual(new_note.author, self.author)
 
     def test_anonymous_user_cannot_create_note(self):
         """Анонимный пользователь не может создать заметку."""
@@ -95,12 +100,12 @@ class TestLogic(TestCaseBase):
         Проверяем, что автор может удалять свои заметки,
         но не имеет права удалять заметки других пользователей.
         """
-        self.client.login(username=self.author.username, password='password')
+        self.client.force_login(self.author)
         initial_notes_count = Note.objects.count()
 
         response = self.client.post(self.DELETE_URL)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, self.SUCCESS_URL)
 
         updated_notes_count = Note.objects.count()
