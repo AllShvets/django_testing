@@ -11,8 +11,8 @@ class TestLogic(TestCaseBase):
     def test_authenticated_user_can_create_note(self):
         """Залогиненный пользователь может создать заметку."""
         self.client.force_login(self.author)
+        Note.objects.all().delete()
         initial_notes_count = Note.objects.count()
-
         response = self.client.post(self.ADD_URL, data=self.FORM_DATA)
         self.assertRedirects(response, self.SUCCESS_URL)
         notes_count = Note.objects.count()
