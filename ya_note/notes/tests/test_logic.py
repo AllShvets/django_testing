@@ -17,11 +17,13 @@ class TestLogic(TestCaseBase):
 
     def test_anonymous_user_cannot_create_note(self):
         """Анонимный пользователь не может создать заметку."""
-        initial_notes_count = self.get_notes_count()
-
+        Note.objects.all().delete()
+        notes_count_init = Note.objects.count()
         response = self.client.post(self.ADD_URL, data=self.FORM_DATA)
-
-        self.assert_creation_failure(response, initial_notes_count)
+        expected_url = f'{self.USERS_LOGIN_URL}?next={self.ADD_URL}'
+        self.assertRedirects(response, expected_url)
+        notes_count = Note.objects.count()
+        self.assertEqual(notes_count, notes_count_init)
 
     def get_notes_count(self):
         """Возвращает текущее количество заметок."""
