@@ -1,10 +1,10 @@
-from .test_case_base import TestCaseBase
-
-from notes.models import Note
+from http import HTTPStatus
 
 from slugify import slugify
 
-from http import HTTPStatus
+from notes.models import Note
+
+from .test_case_base import TestCaseBase
 
 
 class TestLogic(TestCaseBase):

@@ -1,10 +1,13 @@
-import pytest
-from news.models import Comment, News
-from django.urls import reverse
+from datetime import timedelta
+
 from django.conf import settings
 from django.test.client import Client
+from django.urls import reverse
 from django.utils import timezone
-from datetime import datetime, timedelta
+
+import pytest
+
+from news.models import Comment, News
 
 
 @pytest.fixture(autouse=True)
@@ -18,13 +21,12 @@ def anon_client():
 
 
 @pytest.fixture
-def test_news(db):
-    news_instance = News.objects.create(
+def test_news():
+    return News.objects.create(
         title='Тестовая новость',
         text='Просто текст.',
-        date=datetime.today()
+        date=timezone.now()
     )
-    return news_instance
 
 
 @pytest.fixture
@@ -38,13 +40,13 @@ def sample_comment(test_news, sample_author):
 
 
 @pytest.fixture
-def multiple_news_on_home_page(db):
-    today = datetime.today()
+def multiple_news_on_home_page():
+    now = timezone.now()
     return News.objects.bulk_create(
         News(
             title=f'Новость {index}',
             text='Просто текст.',
-            date=today - timedelta(days=index)
+            date=now - timedelta(days=index)
         )
         for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
     )

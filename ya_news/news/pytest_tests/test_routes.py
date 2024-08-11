@@ -1,6 +1,8 @@
 from http import HTTPStatus
-from pytest_django.asserts import assertRedirects
+
 import pytest
+from pytest_django.asserts import assertRedirects
+
 from .conftest import (
     AUTHORIZED_AUTHOR_CLIENT,
     NOT_AUTHORIZED_CLIENT,
@@ -30,11 +32,9 @@ from .conftest import (
     )
 )
 def test_pages_availability(client, url, expected_status):
-    """
-    Проверяет доступность страниц для
-    различных клиентов и ожидаемые статусы ответов.
-    """
+    """Проверяет доступность страниц для разных клиентов."""
     response = client.get(url)
+
     assert response.status_code == expected_status
 
 
@@ -48,5 +48,7 @@ def test_redirect_pages_auth(client, url, user_login_page_url):
     страницам редактирования или удаления комментариев.
     """
     expected_url = f'{user_login_page_url}?next={url}'
+
     response = client.get(url)
+
     assertRedirects(response, expected_url)
