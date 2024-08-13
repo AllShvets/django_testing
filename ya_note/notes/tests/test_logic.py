@@ -13,7 +13,9 @@ class TestLogic(TestCaseBase):
         self.client.force_login(self.author)
         Note.objects.all().delete()
         initial_notes_count = Note.objects.count()
+
         response = self.client.post(self.ADD_URL, data=self.FORM_DATA)
+
         self.assertRedirects(response, self.SUCCESS_URL)
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, initial_notes_count + 1)
@@ -27,7 +29,9 @@ class TestLogic(TestCaseBase):
         """Анонимный пользователь не может создать заметку."""
         Note.objects.all().delete()
         notes_count_init = Note.objects.count()
+
         response = self.client.post(self.ADD_URL, data=self.FORM_DATA)
+
         expected_url = f'{self.LOGIN_URL}?next={self.ADD_URL}'
         self.assertRedirects(response, expected_url)
         notes_count = Note.objects.count()
@@ -65,9 +69,10 @@ class TestLogic(TestCaseBase):
         self.client.force_login(self.author)
         form_data_without_slug = self.FORM_DATA.copy()
         form_data_without_slug.pop('slug')
-        Note.objects.all().delete()
 
+        Note.objects.all().delete()
         initial_notes_count = Note.objects.count()
+
         response = self.client.post(
             self.ADD_URL,
             data=form_data_without_slug
@@ -87,8 +92,11 @@ class TestLogic(TestCaseBase):
         но не имеет доступа к редактированию или удалению чужих.
         """
         self.client.force_login(self.not_author)
+
         response = self.client.post(self.UPDATE_URL, self.FORM_DATA)
+
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
         note_from_db = Note.objects.get(id=self.note.id)
         self.assertEqual(self.note.title, note_from_db.title)
         self.assertEqual(self.note.text, note_from_db.text)
@@ -101,7 +109,10 @@ class TestLogic(TestCaseBase):
         """
         self.client.force_login(self.author)
         initial_notes_count = Note.objects.count()
+
         response = self.client.post(self.DELETE_URL)
+
         self.assertRedirects(response, self.SUCCESS_URL)
+
         updated_notes_count = Note.objects.count()
         self.assertEqual(updated_notes_count + 1, initial_notes_count)

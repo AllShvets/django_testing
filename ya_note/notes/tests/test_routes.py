@@ -38,6 +38,7 @@ class TestRoutes(TestCaseBase):
     def _check_page_availability(self, client, url, expected_status):
         """Проверяет код статуса ответа для заданного клиента и URL."""
         response = client.get(url)
+
         self.assertEqual(response.status_code, expected_status)
 
     def test_redirect_for_anonymous_client(self):
