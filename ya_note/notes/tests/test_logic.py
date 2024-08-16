@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-# from slugify import slugify
+from slugify import slugify
 
 from notes.models import Note
 
@@ -73,7 +73,7 @@ class TestLogic(TestCaseBase):
         """
         Проверяет автоматическое создание slug
         при отсутствии его в данных заметки,
-        используя собственную функцию slugify.
+        используя функцию pytils.translit.slugify.
         """
         self.client.force_login(self.author)
         form_data_without_slug = self.FORM_DATA.copy()
@@ -92,15 +92,8 @@ class TestLogic(TestCaseBase):
         self.assertEqual(new_notes_count, initial_notes_count + 1)
 
         created_note = Note.objects.get()
-        expected_slug = self.custom_slugify(form_data_without_slug['title'])
+        expected_slug = slugify(form_data_without_slug['title'])
         self.assertEqual(created_note.slug, expected_slug)
-
-    def custom_slugify(self, title):
-        """
-        Пример простой реализации slugify.
-        Заменяет пробелы на тире и приводит к нижнему регистру.
-        """
-        return '-'.join(title.lower().split())
 
     def test_author_can_edit_note_correctly(self):
         """
