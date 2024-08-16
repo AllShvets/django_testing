@@ -44,21 +44,30 @@ class TestLogic(TestCaseBase):
     def assert_creation_success(self, response, initial_count):
         """Проверяет успешное создание заметки."""
         self.assertRedirects(response, self.SUCCESS_URL)
+
         self.assertEqual(Note.objects.count(), initial_count + 1)
+
         new_note = Note.objects.latest('id')
+
         self.assert_note_matches_form_data(new_note)
 
     def assert_creation_failure(self, response, initial_count):
         """Проверяет, что заметка не была создана."""
         self.assertEqual(Note.objects.count(), initial_count)
+
         self.assertEqual(response.status_code, 403)
 
     def assert_note_matches_form_data(self, note):
         """Проверяет соответствие заметки данным формы."""
-        self.assertEqual(note.title, self.FORM_DATA['title'])
-        self.assertEqual(note.text, self.FORM_DATA['text'])
-        self.assertEqual(note.slug, self.FORM_DATA['slug'])
-        self.assertEqual(note.author, self.author)
+        expected_title = self.FORM_DATA['title']
+        expected_text = self.FORM_DATA['text']
+        expected_slug = self.FORM_DATA['slug']
+        expected_author = self.author
+
+        self.assertEqual(note.title, expected_title)
+        self.assertEqual(note.text, expected_text)
+        self.assertEqual(note.slug, expected_slug)
+        self.assertEqual(note.author, expected_author)
 
     def test_create_note_without_slug(self):
         """

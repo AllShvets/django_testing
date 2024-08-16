@@ -32,7 +32,6 @@ def test_news_sorted_by_date(client, home_page_news_url):
     object_list = response.context['object_list']
 
     all_dates = [news.date for news in object_list]
-
     sorted_dates = sorted(all_dates, reverse=True)
 
     assert all_dates == sorted_dates
