@@ -36,9 +36,12 @@ def test_auth_user_can_post_comment(
     )
 
     assertRedirects(response, f'{detail_page_news_url}#comments')
+
     comments_count = Comment.objects.count()
     assert comments_count == initial_count_commit + 1
+
     comment = Comment.objects.get()
+
     assert comment.text == form_data['text']
     assert comment.news == test_news
     assert comment.author == sample_author
